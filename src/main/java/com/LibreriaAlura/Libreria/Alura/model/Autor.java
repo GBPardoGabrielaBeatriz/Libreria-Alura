@@ -1,4 +1,5 @@
 package com.LibreriaAlura.Libreria.Alura.model;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -9,8 +10,11 @@ import java.util.List;
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
+    @JsonProperty("name")
         private String nombre;
+    @JsonProperty("birth_year")
         private String fechaDeNacimiento;
+    @JsonProperty("death_year")
         private String fechaDeMuerte;
        // @OneToMany(mappedBy = "autor")
        @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -47,11 +51,14 @@ import java.util.List;
     public void setLibros(List<Libro> libros) {
         this.libros = libros;
     }
+
     public String getFechaDeMuerte() {
-            return fechaDeMuerte;}
+        return fechaDeMuerte;
+    }
 
     public void setFechaDeMuerte(String fechaDeMuerte) {
-            this.fechaDeMuerte = fechaDeMuerte;}
+        this.fechaDeMuerte = fechaDeMuerte;
+    }
 
     @Override
         public String toString() {
@@ -59,8 +66,7 @@ import java.util.List;
                     "id=" + id +
                     ", nombre='" + nombre + '\'' +
                     ", fechaDeNacimiento='" + fechaDeNacimiento + '\'' +
-                    ", fechaDeMuerte='" + fechaDeMuerte + '\'' +
-                    //", libroDd=" + libro +
+                    ", fechaDeMuerte='" + fechaDeMuerte +
                     '}';
         }
 }

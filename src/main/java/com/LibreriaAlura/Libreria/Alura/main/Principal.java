@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class Principal {
@@ -65,7 +66,8 @@ public class Principal {
                     buscarAutoresVivosPorAño();
                     break;
                 case 5:
-                    buscarLibroPorIdioma();
+                    //buscarLibroPorIdioma();
+                    listarLibrosRegistradosPorIdioma();
                     break;
                 case 0:
                     System.out.println("Cerrando la aplicación...");
@@ -98,7 +100,7 @@ public class Principal {
             System.out.println("Aca lo encontramos! ");
             System.out.println("+++++++++ LIBRO +++++++++" +
                     "\nTítulo: " + libroEntidad.getTitulo() +
-                    "\nIdioma: " + libroEntidad.getIdiomas() +
+                    "\nIdioma: " + libroEntidad.getIdioma() +
                     "\nAutor: " + libroEntidad.getAutor() +
                     "\nNúmero de descargas: " + libroEntidad.getNumeroDeDescargas() +
                     "\n");
@@ -127,7 +129,7 @@ public class Principal {
         listadoLibros.forEach(l -> System.out.println(
                 "+++++++++ LIBRO +++++++++" +
                         "\nTítulo: " + l.getTitulo() +
-                        "\nIdioma: " + l.getIdiomas() +
+                        "\nIdioma: " + l.getIdioma() +
                         "\nAutor: " + l.getAutor() +
                         "\nNúmero de descargas: " + l.getNumeroDeDescargas() +
                         "\n"
@@ -135,9 +137,6 @@ public class Principal {
 
     }
 
-
-    private void buscarLibroPorIdioma() {
-    }
     // 3)
     private void buscarAutores() {
         List<Autor> listaAutores = autorRepositorio.mostrarAutores(); // Assuming autorRepository is correctly autowired
@@ -150,7 +149,7 @@ public class Principal {
                listaAutores.forEach(autor -> {
                    System.out.println("Nombre: " + autor.getNombre());
                    System.out.println("Fecha de Nacimiento: " + autor.getFechaDeNacimiento());
-                   System.out.println("Fecha de Fallecimiento: " + (autor.getFechaDeMuerte() != null ? autor.getFechaDeMuerte(): "N/A"));
+                   System.out.println("Fecha de Fallecimiento: " + (autor.getFechaDeMuerte() != null ? autor.getFechaDeMuerte() : "N/A"));
                    System.out.println("*****************\n");
                });
            }}
@@ -171,6 +170,49 @@ private void buscarAutoresVivosPorAño() {
         tipeo.nextLine();
     }
 
+}
+
+//5
+private void listarLibrosRegistradosPorIdioma() {
+    List<String> idiomasRegistrados = libroRepositorio.findAll().stream()
+            .map(Libro::getIdioma)
+            .filter(idioma -> idioma != null && !idioma.isEmpty())
+            .distinct()
+            .collect(Collectors.toList());
+
+    if (idiomasRegistrados.isEmpty()) {
+        System.out.println("No hay idiomas registrados.");
+        return;
+    }
+
+    System.out.println("Seleccione uno de los idiomas registrados:");
+    idiomasRegistrados.forEach(System.out::println);
+
+    var idiomaSeleccionado = tipeo.nextLine().trim().toLowerCase(); // Convertir a minúsculas
+
+    List<String> idiomasRegistradosLowerCase = idiomasRegistrados.stream()
+            .map(String::toLowerCase)
+            .collect(Collectors.toList());
+
+    if (idiomasRegistradosLowerCase.contains(idiomaSeleccionado)) {
+        List<Libro> librosPorIdioma = libroRepositorio.findAll().stream()
+                .filter(l -> l.getIdioma() != null && l.getIdioma().equalsIgnoreCase(idiomaSeleccionado))
+                .collect(Collectors.toList());
+
+        if (librosPorIdioma.isEmpty()) {
+            System.out.println("No hay libros registrados en el idioma seleccionado.");
+        } else {
+            librosPorIdioma.forEach(l -> System.out.println(
+                    "+++++++++ LIBRO +++++++++" +
+                            "\nTítulo: " + l.getTitulo() +
+                            "\nIdioma: " + l.getIdioma() +
+                            "\nAutor: " + l.getAutor() +
+                            "\nNúmero de descargas: " + l.getNumeroDeDescargas() +
+                            "\n"));
+        }
+    } else {
+        System.out.println("Opción inválida.");
+    }
 }
 
 }

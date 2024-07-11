@@ -2,7 +2,9 @@ package com.LibreriaAlura.Libreria.Alura.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "libros")
@@ -11,35 +13,42 @@ public class Libro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String titulo;
-    @Enumerated(EnumType.STRING)
-    private Idioma idiomas;
+
+   // @Enumerated(EnumType.STRING)
+    //private List<String> idiomas;
+    private String idioma;
+
     private Double numeroDeDescargas;
-    //@OneToMany(mappedBy = "libro")
-   // private List<Autor> autores;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "autor_id", referencedColumnName = "id")
     private Autor autor;
 
     public Libro(DatosLibros datos) {
         this.titulo = datos.titulo();
-        //this.idiomas = datos.idiomas();
+        this.idioma = datos.idiomas().toString();
         this.numeroDeDescargas = datos.numeroDeDescargas();
-       this.autor = (Autor) datos.autores();
+        if (datos.autores() != null && !datos.autores().isEmpty()) {
+            this.autor = datos.autores().get(0); // Asigna el primer autor de la lista
+        }
     }
 
     public Libro() {
     }
+
+    // Getters y Setters
 
     @Override
     public String toString() {
         return "Libro{" +
                 "id=" + id +
                 ", titulo='" + titulo + '\'' +
-                ", autores='" + autor + '\'' +
-                ", idioma='" + idiomas + '\'' +
-                ", totalDescargas=" + numeroDeDescargas +
+                ", autor='" + autor + '\'' +
+                ", idiomas='" + idioma + '\'' +
+                ", numeroDeDescargas=" + numeroDeDescargas +
                 '}';
     }
 
@@ -59,12 +68,12 @@ public class Libro {
         this.titulo = titulo;
     }
 
-    public Idioma getIdiomas() {
-        return idiomas;
+    public String getIdioma() {
+        return idioma;
     }
 
-    public void setIdiomas(Idioma idiomas) {
-        this.idiomas = idiomas;
+    public void setIdioma(String idioma) {
+        this.idioma = idioma;
     }
 
     public Double getNumeroDeDescargas() {
@@ -75,12 +84,12 @@ public class Libro {
         this.numeroDeDescargas = numeroDeDescargas;
     }
 
-    public void setAutor(Autor autor) {
-        this.autor = autor;
-    }
-
     public Autor getAutor() {
         return autor;
     }
 
+    public void setAutor(Autor autor) {
+        this.autor = autor;
+    }
 }
+

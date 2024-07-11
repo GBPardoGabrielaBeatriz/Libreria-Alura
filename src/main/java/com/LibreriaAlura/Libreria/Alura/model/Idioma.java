@@ -1,5 +1,8 @@
 package com.LibreriaAlura.Libreria.Alura.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum Idioma {
 
     ES("es"),
@@ -9,6 +12,19 @@ public enum Idioma {
     PT("pt");
 
     private String idioma;
+
+    @Override
+    public String toString() {
+        return idioma;
+    }
+
+    public String getIdioma() {
+        return idioma;
+    }
+
+    public void setIdioma(String idioma) {
+        this.idioma = idioma;
+    }
 
     Idioma (String idioma){
         this.idioma = idioma;
