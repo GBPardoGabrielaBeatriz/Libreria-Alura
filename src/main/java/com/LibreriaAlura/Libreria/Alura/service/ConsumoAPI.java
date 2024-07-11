@@ -6,6 +6,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import static com.LibreriaAlura.Libreria.Alura.main.Principal.URL_BASE;
+
 public class ConsumoAPI {
 
     public String obtenerDatos(String url) {
